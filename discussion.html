@@ -13,6 +13,8 @@
             --accent: #66b3ff;
             --qq-green: #12b7f5;
             --telegram-blue: #0088cc;
+            --wechat-green: #07C160;
+            --qqchannel-blue: #1A7AFF;
             --text-dark: #003366;
             --text-light: #f0f9ff;
             --card-bg: rgba(255, 255, 255, 0.9);
@@ -134,18 +136,22 @@
         
         /* 社区平台卡片 */
         .community-platforms {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
             gap: 40px;
             margin: 50px 0;
+        }
+        
+        @media (max-width: 520px) {
+            .community-platforms {
+                grid-template-columns: 1fr;
+            }
         }
         
         .platform-card {
             background-color: var(--card-bg);
             border-radius: 20px;
             padding: 40px 30px;
-            width: 480px;
             text-align: center;
             box-shadow: var(--shadow);
             transition: all 0.4s ease;
@@ -175,6 +181,14 @@
             background: linear-gradient(to right, #0088cc, #006699);
         }
         
+        .wechat-card:before {
+            background: linear-gradient(to right, #07C160, #059b47);
+        }
+        
+        .qqchannel-card:before {
+            background: linear-gradient(to right, #1A7AFF, #0a5fcc);
+        }
+        
         .platform-icon {
             width: 100px;
             height: 100px;
@@ -197,6 +211,16 @@
             box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
         }
         
+        .wechat-card .platform-icon {
+            background: linear-gradient(135deg, #07C160, #059b47);
+            box-shadow: 0 8px 20px rgba(7, 193, 96, 0.4);
+        }
+        
+        .qqchannel-card .platform-icon {
+            background: linear-gradient(135deg, #1A7AFF, #0a5fcc);
+            box-shadow: 0 8px 20px rgba(26, 122, 255, 0.4);
+        }
+        
         .platform-card h3 {
             font-size: 2.2rem;
             margin-bottom: 15px;
@@ -208,7 +232,6 @@
             color: #555;
             line-height: 1.7;
             margin-bottom: 25px;
-            min-height: 80px;
         }
         
         .platform-id {
@@ -234,6 +257,16 @@
             border: 2px dashed #0088cc;
         }
         
+        .wechat-card .platform-id {
+            color: #07C160;
+            border: 2px dashed #07C160;
+        }
+        
+        .qqchannel-card .platform-id {
+            color: #1A7AFF;
+            border: 2px dashed #1A7AFF;
+        }
+        
         .join-button {
             display: inline-block;
             padding: 15px 35px;
@@ -256,6 +289,16 @@
             color: white;
         }
         
+        .wechat-card .join-button {
+            background: linear-gradient(135deg, #07C160, #059b47);
+            color: white;
+        }
+        
+        .qqchannel-card .join-button {
+            background: linear-gradient(135deg, #1A7AFF, #0a5fcc);
+            color: white;
+        }
+        
         .join-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
@@ -267,6 +310,22 @@
         
         .join-button i {
             margin-right: 10px;
+        }
+        
+        /* 微信群二维码样式 */
+        .wechat-qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .wechat-qrcode img {
+            width: 220px;
+            height: 220px;
+            border: 10px solid white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: white;
         }
         
         /* 社区规则 */
@@ -345,76 +404,6 @@
             line-height: 1.7;
         }
         
-        /* 活动日历 */
-        .events-calendar {
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            padding: 40px;
-            margin: 50px 0;
-            box-shadow: var(--shadow);
-        }
-        
-        .events-calendar h3 {
-            text-align: center;
-            font-size: 2rem;
-            color: var(--primary-dark);
-            margin-bottom: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        .calendar-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
-        
-        .event-card {
-            background: linear-gradient(135deg, #fff, #f5f7ff);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border-left: 5px solid var(--accent);
-            transition: all 0.3s ease;
-        }
-        
-        .event-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.1);
-        }
-        
-        .event-date {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .event-title {
-            font-size: 1.4rem;
-            margin-bottom: 12px;
-            color: var(--primary-dark);
-        }
-        
-        .event-description {
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        
-        .event-location {
-            color: #777;
-            font-style: italic;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
         /* 页脚样式 */
         footer {
             background: linear-gradient(to right, var(--primary-dark), var(--accent));
@@ -455,7 +444,7 @@
                 padding: 30px 20px;
             }
             
-            .community-rules, .events-calendar {
+            .community-rules {
                 padding: 30px 20px;
             }
         }
@@ -489,6 +478,7 @@
 
         <!-- 社区平台 -->
         <div class="community-platforms">
+            <!-- QQ群 -->
             <div class="platform-card qq-card">
                 <div class="platform-icon">
                     <i class="fab fa-qq"></i>
@@ -505,6 +495,7 @@
                 </a>
             </div>
             
+            <!-- Telegram群 -->
             <div class="platform-card telegram-card">
                 <div class="platform-icon">
                     <i class="fab fa-telegram"></i>
@@ -518,6 +509,40 @@
                 
                 <a href="https://t.me/+beI9k298m-cxNGU1" class="join-button" target="_blank">
                     <i class="fas fa-external-link-alt"></i> 加入Telegram群
+                </a>
+            </div>
+            
+            <!-- 微信群 -->
+            <div class="platform-card wechat-card">
+                <div class="platform-icon">
+                    <i class="fab fa-weixin"></i>
+                </div>
+                <h3>微信群</h3>
+                <p>扫描下方二维码加入我们的微信群，与玩家即时交流，获取服务器最新动态，参与社区活动讨论。</p>
+                
+                <div class="wechat-qrcode">
+                    <img src="/微信群.png" alt="微信群二维码">
+                </div>
+                
+                <div class="platform-id">
+                    <i class="fas fa-qrcode"></i> 扫码加入微信群
+                </div>
+            </div>
+            
+            <!-- QQ频道 -->
+            <div class="platform-card qqchannel-card">
+                <div class="platform-icon">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3>QQ频道</h3>
+                <p>加入我们的QQ频道，获取独家服务器资讯，参与频道专属活动，与更多玩家交流游戏心得。</p>
+                
+                <div class="platform-id">
+                    <i class="fas fa-hashtag"></i> 频道号: pd67365969
+                </div>
+                
+                <a href="https://pd.qq.com/s/6taal5a7g?b=9" class="join-button" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> 加入QQ频道
                 </a>
             </div>
         </div>
@@ -557,40 +582,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 活动日历 -->
-        <div class="events-calendar">
-            <h3><i class="fas fa-calendar-alt"></i> 近期活动</h3>
-            <div class="calendar-container">
-                <div class="event-card">
-                    <div class="event-date"><i class="fas fa-clock"></i> 每周五 20:00</div>
-                    <div class="event-title">建筑大师挑战赛</div>
-                    <div class="event-description">每周主题建筑挑战，限时3小时完成。获胜者将获得稀有物品和专属称号。</div>
-                    <div class="event-location"><i class="fas fa-map-marker-alt"></i> 主城建筑区</div>
-                </div>
-                
-                <div class="event-card">
-                    <div class="event-date"><i class="fas fa-clock"></i> 每月第一个周六</div>
-                    <div class="event-title">社区集市日</div>
-                    <div class="event-description">玩家自由交易市场，出售多余资源、稀有物品或提供特色服务。</div>
-                    <div class="event-location"><i class="fas fa-map-marker-alt"></i> 主城中央广场</div>
-                </div>
-                
-                <div class="event-card">
-                    <div class="event-date"><i class="fas fa-clock"></i> 12月25日 19:00</div>
-                    <div class="event-title">圣诞寻宝活动</div>
-                    <div class="event-description">全服隐藏圣诞礼盒，内含稀有物品和节日装饰。寻找圣诞老人获取线索。</div>
-                    <div class="event-location"><i class="fas fa-map-marker-alt"></i> 全服务器范围</div>
-                </div>
-                
-                <div class="event-card">
-                    <div class="event-date"><i class="fas fa-clock"></i> 1月1日 22:00</div>
-                    <div class="event-title">新年烟花庆典</div>
-                    <div class="event-description">跨年烟花表演，玩家可免费领取烟花，共同迎接新年。抽奖活动同步进行。</div>
-                    <div class="event-location"><i class="fas fa-map-marker-alt"></i> 主城观景台</div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- 页脚 -->
@@ -618,18 +609,6 @@
                     card.style.opacity = '1';
                     card.style.transform = 'translateY(0)';
                 }, 200 * index);
-            });
-            
-            // 为活动卡片添加悬停效果
-            const eventCards = document.querySelectorAll('.event-card');
-            eventCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.borderLeftColor = '#ff6b6b';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    this.style.borderLeftColor = 'var(--accent)';
-                });
             });
         });
     </script>
