@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>建筑展示 - Nini Minecraft服务器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-light: #e6f7ff;
+            --primary-medium: #b3e0ff;
+            --primary-dark: #003366;
+            --accent: #66b3ff;
+            --medieval-color: #8e7d5b;
+            --modern-color: #3498db;
+            --fantasy-color: #9b59b6;
+            --asian-color: #e74c3c;
+            --text-dark: #003366;
+            --text-light: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow: 0 4px 12px rgba(0, 51, 102, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-medium));
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1543857778-c4a1a569e7bd?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            background-blend-mode: multiply;
+            background-color: rgba(182, 224, 255, 0.8);
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--text-light);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* 主内容区域 */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-header h2:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* 建筑分类 */
+        .building-categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .category-btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            background-color: var(--card-bg);
+            border: 2px solid transparent;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .category-btn.active, .category-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .medieval-btn {
+            color: var(--medieval-color);
+            border-color: var(--medieval-color);
+        }
+        
+        .medieval-btn.active, .medieval-btn:hover {
+            background-color: var(--medieval-color);
+            color: white;
+        }
+        
+        .modern-btn {
+            color: var(--modern-color);
+            border-color: var(--modern-color);
+        }
+        
+        .modern-btn.active, .modern-btn:hover {
+            background-color: var(--modern-color);
+            color: white;
+        }
+        
+        .fantasy-btn {
+            color: var(--fantasy-color);
+            border-color: var(--fantasy-color);
+        }
+        
+        .fantasy-btn.active, .fantasy-btn:hover {
+            background-color: var(--fantasy-color);
+            color: white;
+        }
+        
+        .asian-btn {
+            color: var(--asian-color);
+            border-color: var(--asian-color);
+        }
+        
+        .asian-btn.active, .asian-btn:hover {
+            background-color: var(--asian-color);
+            color: white;
+        }
+        
+        .all-btn {
+            color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        .all-btn.active, .all-btn:hover {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+        
+        /* 建筑展示 */
+        .buildings-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .building-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            position: relative;
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .building-card.hidden {
+            display: none;
+        }
+        
+        .building-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 51, 102, 0.2);
+        }
+        
+        .building-image {
+            width: 100%;
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .building-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            color: white;
+        }
+        
+        .building-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .building-author {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .building-category {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            background-color: rgba(255,255,255,0.9);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .building-card.medieval .building-category {
+            color: var(--medieval-color);
+        }
+        
+        .building-card.modern .building-category {
+            color: var(--modern-color);
+        }
+        
+        .building-card.fantasy .building-category {
+            color: var(--fantasy-color);
+        }
+        
+        .building-card.asian .building-category {
+            color: var(--asian-color);
+        }
+        
+        .building-details {
+            padding: 20px;
+        }
+        
+        .building-description {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            min-height: 80px;
+        }
+        
+        .building-stats {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            color: #777;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin: 40px 0;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state i {
+            font-size: 5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.7;
+        }
+        
+        .submit-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--accent), var(--primary-dark));
+            color: white;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .submit-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        /* 投稿指南 */
+        .submission-guide {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 50px 0;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid var(--accent);
+        }
+        
+        .submission-guide h3 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .guide-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .guide-step {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+        
+        .step-content p {
+            color: #555;
+            line-height: 1.7;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .buildings-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .building-categories {
+                gap: 10px;
+            }
+            
+            .category-btn {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+            }
+            
+            .submission-guide {
+                padding: 30px 20px;
+            }
+            
+            .guide-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/nini服务器.png" alt="Nini Server Logo">
+            <h1>Nini Minecraft服务器</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <a href="about.html"><i class="fas fa-info-circle"></i> 关于</a>
+            <a href="juanzen.html"><i class="fas fa-donate"></i> 捐赠</a>
+            <a href="transportation.html"><i class="fas fa-subway"></i> 交通</a>
+            <a href="discussion.html"><i class="fas fa-comments"></i> 讨论</a>
+            <a href="plug.html"><i class="fas fa-plug"></i> 插件</a>
+            <a href="building.html" class="active"><i class="fas fa-landmark"></i> 建筑</a>
+            <a href="control.html"><i class="fas fa-users-cog"></i> 管理</a>
+            <a href="ban.html"><i class="fas fa-lock"></i> 小黑屋</a>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <div class="page-header">
+            <h2>服务器建筑艺术</h2>
+            <p>探索玩家们的杰作，从宏伟城堡到现代都市，感受Minecraft建筑的无限创意</p>
+        </div>
+
+        <!-- 建筑分类 -->
+        <div class="building-categories">
+            <button class="category-btn all-btn active" data-category="all">
+                <i class="fas fa-star"></i> 全部建筑
+            </button>
+            <button class="category-btn medieval-btn" data-category="medieval">
+                <i class="fas fa-fort-awesome"></i> 中世纪
+            </button>
+            <button class="category-btn modern-btn" data-category="modern">
+                <i class="fas fa-city"></i> 现代风格
+            </button>
+            <button class="category-btn fantasy-btn" data-category="fantasy">
+                <i class="fas fa-dragon"></i> 奇幻世界
+            </button>
+            <button class="category-btn asian-btn" data-category="asian">
+                <i class="fas fa-torii-gate"></i> 东方建筑
+            </button>
+        </div>
+
+        <!-- 建筑展示 -->
+        <div class="buildings-container">
+            <!-- 空状态 -->
+            <div class="empty-state">
+                <i class="fas fa-drafting-compass"></i>
+                <h3>建筑画廊筹备中</h3>
+                <p>我们正在收集服务器中最令人惊叹的建筑作品。目前画廊尚未开放，但您可以成为第一批展示作品的建筑师！</p>
+                <p>将您的建筑杰作投稿给我们，让全服务器玩家欣赏您的创造力。</p>
+                <a href="#submission" class="submit-button">
+                    <i class="fas fa-paper-plane"></i> 我要投稿
+                </a>
+            </div>
+
+            <!-- 建筑卡片模板 (隐藏状态) -->
+            <div class="building-card medieval hidden">
+                <div class="building-image" style="background-image: url('https://images.unsplash.com/photo-1591892150210-0be1d5f08a4f?q=80&w=2070&auto=format&fit=crop');">
+                    <div class="building-overlay">
+                        <div class="building-title">皇家城堡</div>
+                        <div class="building-author">
+                            <i class="fas fa-user"></i> 建筑师: CastleBuilder
+                        </div>
+                    </div>
+                    <div class="building-category">中世纪</div>
+                </div>
+                <div class="building-details">
+                    <div class="building-description">
+                        宏伟的中世纪城堡，拥有高耸的塔楼、坚固的城墙和精美的内饰。耗时三个月建造，包含200多个房间。
+                    </div>
+                    <div class="building-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-ruler-combined"></i> 尺寸: 200×300
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i> 耗时: 3个月
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-thumbs-up"></i> 点赞: 128
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 投稿指南 -->
+        <div id="submission" class="submission-guide">
+            <h3><i class="fas fa-pencil-alt"></i> 建筑投稿指南</h3>
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>准备建筑截图</h4>
+                        <p>使用高质量截图（至少3张不同角度），展示建筑的全貌和细节。推荐使用光影模组拍摄。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>收集建筑信息</h4>
+                        <p>准备建筑名称、简短描述（100字内）、建筑类型、尺寸和建造时间。注明您的游戏ID。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>联系管理员</h4>
+                        <p>通过QQ群(853132240)联系管理员，发送您的建筑信息和截图。或通过游戏内邮件发送给管理员。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>等待审核</h4>
+                        <p>管理团队将在3个工作日内审核您的投稿。通过后您的建筑将展示在本页面并标注建筑师信息。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4>建筑参观</h4>
+                        <p>我们不会提供建筑坐标，只会提供建筑图片进行展出，其他玩家可以参观您的作品。您也可以申请成为导游。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h4>奖励与荣誉</h4>
+                        <p>被展示的建筑师将获得专属称号、游戏内奖励，并进入月度建筑师评选。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="discussion.html" class="submit-button">
+                    <i class="fab fa-qq"></i> 加入QQ群投稿
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 Nini Server. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 建筑分类功能
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            const buildingCards = document.querySelectorAll('.building-card');
+            
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 更新按钮状态
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // 显示/隐藏建筑卡片
+                    buildingCards.forEach(card => {
+                        if (category === 'all') {
+                            card.classList.remove('hidden');
+                        } else {
+                            if (card.classList.contains(category)) {
+                                card.classList.remove('hidden');
+                            } else {
+                                card.classList.add('hidden');
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // 平滑滚动到投稿指南
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小黑屋 - Nini Minecraft服务器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-light: #e6f7ff;
+            --primary-medium: #b3e0ff;
+            --primary-dark: #003366;
+            --accent: #66b3ff;
+            --text-dark: #003366;
+            --text-light: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --shadow: 0 4px 12px rgba(0, 51, 102, 0.1);
+            --online: #2ecc71;
+            --offline: #e74c3c;
+            --banned: #9b59b6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-medium));
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            position: relative;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--text-light);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-links a.ban-link {
+            background-color: rgba(155, 89, 182, 0.3);
+        }
+        
+        /* 主内容区域 */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .welcome-badge {
+            display: inline-block;
+            background: linear-gradient(to right, var(--accent), var(--primary-dark));
+            color: white;
+            padding: 8px 25px;
+            border-radius: 30px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* 封禁表格样式 */
+        .ban-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .ban-table th {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .ban-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .ban-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .ban-table tr:nth-child(even) {
+            background-color: #f5f9ff;
+        }
+        
+        .ban-table tr:hover {
+            background-color: #e6f0ff;
+        }
+        
+        .ban-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .permanent {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .temporary {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        /* 规则列表样式 */
+        .rules-list {
+            counter-reset: rule-counter;
+            padding: 20px;
+            background: #f0f8ff;
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+        
+        .rule-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            background-color: white;
+            border-radius: 0 8px 8px 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .rule-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .rule-item:before {
+            counter-increment: rule-counter;
+            content: counter(rule-counter);
+            position: absolute;
+            left: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-dark);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .rule-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+        }
+        
+        .rule-description {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        /* 举报区域样式 */
+        .report-section {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .report-btn {
+            background: linear-gradient(to right, var(--accent), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .report-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .report-note {
+            font-size: 1rem;
+            color: #555;
+            max-width: 600px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .ban-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .page-header h2 {
+                font-size: 2rem;
+            }
+            
+            .card h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/nini服务器.png" alt="Nini Server Logo">
+            <h1>Nini Minecraft服务器</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <a href="about.html"><i class="fas fa-info-circle"></i> 关于</a>
+            <a href="juanzen.html"><i class="fas fa-donate"></i> 捐赠</a>
+            <a href="transportation.html"><i class="fas fa-subway"></i> 交通</a>
+            <a href="discussion.html"><i class="fas fa-comments"></i> 讨论</a>
+            <a href="plug.html"><i class="fas fa-plug"></i> 插件</a>
+            <a href="building.html"><i class="fas fa-landmark"></i> 建筑</a>
+            <a href="control.html"><i class="fas fa-users-cog"></i> 管理</a>
+            <a href="ban.html" class="active ban-link"><i class="fas fa-lock"></i> 小黑屋</a>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <div class="page-header">
+            <h2><i class="fas fa-lock"></i> 服务器小黑屋</h2>
+            <p>维护公平游戏环境，记录违规玩家处理信息</p>
+            <div class="welcome-badge">当前封禁玩家: 20人 | 最后更新: 2025-7-1</div>
+        </div>
+
+        <!-- 封禁名单 -->
+        <div class="card">
+            <h3><i class="fas fa-user-slash"></i> 封禁名单</h3>
+            <p>以下是违反服务器规则的玩家名单，维护公平的游戏环境人人有责。</p>
+            
+            <table class="ban-table">
+                <thead>
+                    <tr>
+                        <th width="20%">玩家ID</th>
+                        <th width="45%">封禁理由</th>
+                        <th width="20%">封禁期限</th>
+                        <th width="15%">状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>qwertyt</td>
+                        <td>使用外挂程序、恶意破坏其他玩家建筑</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>speedsilver</td>
+                        <td>使用外挂、盗窃其他玩家物品、破坏建筑</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>bugjump</td>
+                        <td>多次使用侮辱性语言攻击其他玩家</td>
+                        <td>30天</td>
+                        <td><span class="ban-status temporary">封禁中</span></td>
+                    </tr>
+                    <tr>
+                        <td>bai_lan</td>
+                        <td>恶意利用游戏漏洞获取资源</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>ZuarXQloker</td>
+                        <td>多次偷窃其他玩家物品</td>
+                        <td>14天</td>
+                        <td><span class="ban-status temporary">封禁中</span></td>
+                    </tr>
+                    <tr>
+                        <td>p2ik31</td>
+                        <td>故意破坏公共设施</td>
+                        <td>7天</td>
+                        <td><span class="ban-status temporary">已解封</span></td>
+                    </tr>
+                    <tr>
+                        <td>Jialeya_2</td>
+                        <td>使用侮辱性皮肤和ID</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>KJsr4455</td>
+                        <td>恶意宣群、刷屏骚扰其他玩家</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>Redstone_</td>
+                        <td>恶意红石机器导致服务器卡顿</td>
+                        <td>30天</td>
+                        <td><span class="ban-status temporary">封禁中</span></td>
+                    </tr>
+                    <tr>
+                        <td>uncomfortably_</td>
+                        <td>多次违规建筑影响服务器性能</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>kkksp</td>
+                        <td>使用外挂进行PVP</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>ghtesoe</td>
+                        <td>恶意欺骗新玩家</td>
+                        <td>14天</td>
+                        <td><span class="ban-status temporary">封禁中</span></td>
+                    </tr>
+                    <tr>
+                        <td>Jialeya_</td>
+                        <td>多次违规交易行为</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>tapouting</td>
+                        <td>恶意攻击服务器基础设施</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>LLL6j7qwe731</td>
+                        <td>使用外挂获取资源</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                    <tr>
+                        <td>aqpwoeil</td>
+                        <td>破坏他人建筑并拒绝修复</td>
+                        <td>30天</td>
+                        <td><span class="ban-status temporary">封禁中</span></td>
+                    </tr>
+                    <tr>
+                        <td>16pi1tiqwx67</td>
+                        <td>尝试进行炸服攻击</td>
+                        <td>永久</td>
+                        <td><span class="ban-status permanent">永久封禁</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 服务器规则 -->
+        <div class="card">
+            <h3><i class="fas fa-gavel"></i> 服务器规则</h3>
+            <p>所有玩家必须遵守以下规则，违规者将根据情节严重程度予以处罚。</p>
+            
+            <div class="rules-list">
+                <div class="rule-item">
+                    <div class="rule-title">禁止宣传其他服务器或群组</div>
+                    <div class="rule-description">未经管理员同意，禁止在群内或游戏内宣传其他服务器或群组。</div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-title">禁止刷屏行为</div>
+                    <div class="rule-description">严禁在群内或游戏内进行刷屏，影响其他玩家正常交流。</div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-title">禁止使用外挂程序</div>
+                    <div class="rule-description">严禁使用任何形式的外挂、作弊客户端或辅助程序。</div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-title">保护玩家权益</div>
+                    <div class="rule-description">严禁无端侵犯其他游戏玩家的合法权利，包括但不限于偷窃、破坏建筑、人身攻击等行为。</div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-title">禁止攻击服务器</div>
+                    <div class="rule-description">严禁进行任何形式的炸服、DDoS攻击或利用漏洞破坏服务器稳定性的行为。</div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-title">禁止破坏他人建筑</div>
+                    <div class="rule-description">未经允许不得破坏、修改其他玩家的建筑和创作。</div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-title">禁止偷窃行为</div>
+                    <div class="rule-description">严禁偷窃其他玩家的物品、资源或财产。</div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-title">文明游戏行为</div>
+                    <div class="rule-description">禁止使用侮辱性ID、皮肤或对其他玩家进行人身攻击。</div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-title">禁止利用漏洞</div>
+                    <div class="rule-description">严禁利用游戏漏洞获取不正当利益或破坏游戏平衡。</div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-title">处罚规则</div>
+                    <div class="rule-description">触犯规则者：第一次警告，第二次封禁七天，第三次永久封禁。严重违规者可能直接永久封禁。</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 举报入口 -->
+        <div class="report-section">
+            <h3><i class="fas fa-exclamation-triangle"></i> 发现违规行为？</h3>
+            <p class="report-note">如果您发现任何玩家违反服务器规则，请立即向我们举报。我们将尽快处理您的举报，并对举报者信息严格保密。</p>
+            
+            <a href="discussion.html" class="report-btn">
+                <i class="fab fa-qq"></i> 前往QQ群举报
+            </a>
+            
+            <p class="report-note">
+                QQ群号: 853132240<br>
+                或者通过Telegram群举报: <a href="https://t.me/+beI9k298m-cxNGU1">https://t.me/+beI9k298m-cxNGU1</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 Nini Server. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 200 * index);
+            });
+            
+            // 表格行悬停效果
+            const tableRows = document.querySelectorAll('.ban-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', () => {
+                    row.style.backgroundColor = '#e6f0ff';
+                });
+                row.addEventListener('mouseleave', () => {
+                    if (Array.from(tableRows).indexOf(row) % 2 === 0) {
+                        row.style.backgroundColor = '';
+                    } else {
+                        row.style.backgroundColor = '#f5f9ff';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

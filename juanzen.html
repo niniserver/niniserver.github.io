@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>捐赠支持 - Nini Minecraft服务器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-light: #e6f7ff;
+            --primary-medium: #b3e0ff;
+            --primary-dark: #003366;
+            --accent: #66b3ff;
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+            --text-dark: #003366;
+            --text-light: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow: 0 4px 12px rgba(0, 51, 102, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-medium));
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1531259683007-016a7b628fc3?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            background-blend-mode: multiply;
+            background-color: rgba(182, 224, 255, 0.8);
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--text-light);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* 主内容区域 */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-header h2:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 51, 102, 0.15);
+        }
+        
+        .card h3 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* 捐赠方式 */
+        .donation-methods {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 50px;
+            margin: 30px 0;
+        }
+        
+        .donation-method {
+            background: linear-gradient(135deg, #f0f9ff, #e1f5fe);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            width: 320px;
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .donation-method:hover {
+            transform: translateY(-8px);
+        }
+        
+        .donation-method:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+        
+        .wechat:before {
+            background: linear-gradient(to right, #07c160, #05a050);
+        }
+        
+        .alipay:before {
+            background: linear-gradient(to right, #1677ff, #0957c3);
+        }
+        
+        .donation-method i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .wechat i {
+            color: #07c160;
+        }
+        
+        .alipay i {
+            color: #1677ff;
+        }
+        
+        .donation-method h4 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+        
+        .qrcode-container {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+        
+        .qrcode-container img {
+            width: 200px;
+            height: 200px;
+            display: block;
+        }
+        
+        .donation-method p {
+            font-size: 1.1rem;
+            margin-top: 15px;
+            color: #555;
+        }
+        
+        /* 捐赠名单 */
+        .donation-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .donation-item {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .donation-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .donation-rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .rank-1 {
+            background: linear-gradient(135deg, var(--gold), #daa520);
+            color: #8b7500;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .rank-2 {
+            background: linear-gradient(135deg, var(--silver), #a8a8a8);
+            color: #555;
+            box-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
+        }
+        
+        .rank-3 {
+            background: linear-gradient(135deg, var(--bronze), #8c531b);
+            color: #5a3a10;
+            box-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
+        }
+        
+        .rank-other {
+            background: linear-gradient(135deg, #e0e0e0, #bdbdbd);
+            color: #555;
+        }
+        
+        .donation-details {
+            flex: 1;
+        }
+        
+        .donation-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+        }
+        
+        .donation-amount {
+            font-size: 1.1rem;
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .donation-note {
+            font-size: 0.95rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .anonymous {
+            color: #7f8c8d;
+        }
+        
+        .total-donations {
+            text-align: center;
+            font-size: 1.3rem;
+            margin: 40px 0 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 10px;
+            display: inline-block;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+        
+        .total-donations span {
+            font-weight: 700;
+            color: #e74c3c;
+            font-size: 1.5rem;
+        }
+        
+        /* 进度条 */
+        .progress-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .progress-label {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress-bar {
+            height: 25px;
+            background-color: #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            border-radius: 12px;
+            width: 65%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 10px rgba(0, 150, 255, 0.3);
+        }
+        
+        /* 感谢信息 */
+        .thank-you {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-radius: 15px;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .thank-you i {
+            font-size: 4rem;
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+        
+        .thank-you h3 {
+            font-size: 2rem;
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+        
+        .thank-you p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .donation-methods {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .donation-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .donation-method {
+                width: 100%;
+                max-width: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/nini服务器.png" alt="Nini Server Logo">
+            <h1>Nini Minecraft服务器</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <a href="about.html"><i class="fas fa-info-circle"></i> 关于</a>
+            <a href="juanzen.html" class="active"><i class="fas fa-donate"></i> 捐赠</a>
+            <a href="transportation.html"><i class="fas fa-subway"></i> 交通</a>
+            <a href="discussion.html"><i class="fas fa-comments"></i> 讨论</a>
+            <a href="plug.html"><i class="fas fa-plug"></i> 插件</a>
+            <a href="building.html"><i class="fas fa-landmark"></i> 建筑</a>
+            <a href="control.html"><i class="fas fa-users-cog"></i> 管理</a>
+            <a href="ban.html"><i class="fas fa-lock"></i> 小黑屋</a>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <div class="page-header">
+            <h2>支持服务器发展</h2>
+            <p>您的捐赠将直接用于服务器硬件升级、带宽费用和维护成本，帮助我们提供更好的游戏体验</p>
+        </div>
+
+        <!-- 捐赠方式 -->
+        <div class="card" style="animation-delay: 0.2s">
+            <h3><i class="fas fa-hand-holding-heart"></i> 捐赠方式</h3>
+            <p class="text-center">扫描下方二维码进行捐赠，请备注您的游戏ID以便我们记录</p>
+            
+            <div class="donation-methods">
+                <div class="donation-method wechat">
+                    <i class="fab fa-weixin"></i>
+                    <h4>微信支付</h4>
+                    <div class="qrcode-container">
+                        <img src="/微信支付.jpg" alt="微信支付二维码">
+                    </div>
+                    <p>打开微信扫一扫进行捐赠</p>
+                </div>
+                
+                <div class="donation-method alipay">
+                    <i class="fab fa-alipay"></i>
+                    <h4>支付宝</h4>
+                    <div class="qrcode-container">
+                        <img src="/支付宝支付.jpg" alt="支付宝支付二维码">
+                    </div>
+                    <p>打开支付宝扫一扫进行捐赠</p>
+                </div>
+            </div>
+            
+            <div class="thank-you">
+                <i class="fas fa-heart"></i>
+                <h3>感谢您的慷慨支持！</h3>
+                <p>每一位捐赠者都将被记录在下方荣誉榜中，服务器的发展离不开每一位玩家的支持！</p>
+            </div>
+        </div>
+
+        <!-- 捐赠进度 -->
+        <div class="card" style="animation-delay: 0.4s">
+            <h3><i class="fas fa-chart-line"></i> 捐赠目标</h3>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>当前捐赠总额: ¥500.23</span>
+                    <span>目标: ¥800</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill">65%</div>
+                </div>
+                <p style="margin-top: 15px; font-style: italic;">下一阶段目标：升级服务器内存至64GB</p>
+            </div>
+        </div>
+
+        <!-- 捐赠名单 -->
+        <div class="card" style="animation-delay: 0.6s">
+            <h3><i class="fas fa-medal"></i> 捐赠荣誉榜</h3>
+            <p class="text-center">衷心感谢以下玩家的慷慨支持（按捐赠金额排序）</p>
+            
+            <div class="donation-list">
+                <!-- 前三名有特殊样式 -->
+                <div class="donation-item">
+                    <div class="donation-rank rank-1">1</div>
+                    <div class="donation-details">
+                        <div class="donation-name">chaomian</div>
+                        <div class="donation-amount">约¥150 (DDR4 3200 16G内存条一根)</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-2">2</div>
+                    <div class="donation-details">
+                        <div class="donation-name">Wuyueup</div>
+                        <div class="donation-amount">¥95.5</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-3">3</div>
+                    <div class="donation-details">
+                        <div class="donation-name">yuawayu</div>
+                        <div class="donation-amount">¥70.19</div>
+                    </div>
+                </div>
+                
+                <!-- 其他捐赠者 -->
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">4</div>
+                    <div class="donation-details">
+                        <div class="donation-name">EMBERGLINT</div>
+                        <div class="donation-amount">¥45</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">5</div>
+                    <div class="donation-details">
+                        <div class="donation-name">SaltyWig1314875</div>
+                        <div class="donation-amount">¥20</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">6</div>
+                    <div class="donation-details">
+                        <div class="donation-name">KevinRicardo</div>
+                        <div class="donation-amount">¥20</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">7</div>
+                    <div class="donation-details">
+                        <div class="donation-name">shixieawa</div>
+                        <div class="donation-amount">¥14</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">8</div>
+                    <div class="donation-details">
+                        <div class="donation-name">UnusedPond95562</div>
+                        <div class="donation-amount">¥10</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">9</div>
+                    <div class="donation-details">
+                        <div class="donation-name">netzachic</div>
+                        <div class="donation-amount">¥10</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">10</div>
+                    <div class="donation-details">
+                        <div class="donation-name">YanluvL</div>
+                        <div class="donation-amount">¥10</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">11</div>
+                    <div class="donation-details">
+                        <div class="donation-name">星派</div>
+                        <div class="donation-amount">¥10</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">12</div>
+                    <div class="donation-details">
+                        <div class="donation-name">yizhimaijiya</div>
+                        <div class="donation-amount">¥10</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">13</div>
+                    <div class="donation-details">
+                        <div class="donation-name">GIGNmc</div>
+                        <div class="donation-amount">¥6</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">14</div>
+                    <div class="donation-details">
+                        <div class="donation-name">xinshuo12345</div>
+                        <div class="donation-amount">¥5</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">15</div>
+                    <div class="donation-details">
+                        <div class="donation-name">AjarCactus22590</div>
+                        <div class="donation-amount">¥5</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">16</div>
+                    <div class="donation-details">
+                        <div class="donation-name">Baby_BgKvEi</div>
+                        <div class="donation-amount">¥5</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">17</div>
+                    <div class="donation-details">
+                        <div class="donation-name">bewiggedfern807</div>
+                        <div class="donation-amount">¥5</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">18</div>
+                    <div class="donation-details">
+                        <div class="donation-name">F1ashes_</div>
+                        <div class="donation-amount">¥4</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">19</div>
+                    <div class="donation-details">
+                        <div class="donation-name">monkey</div>
+                        <div class="donation-amount">¥3.42</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">20</div>
+                    <div class="donation-details">
+                        <div class="donation-name anonymous">匿名 "*!"</div>
+                        <div class="donation-amount">¥1</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">21</div>
+                    <div class="donation-details">
+                        <div class="donation-name anonymous">匿名 "新*A"</div>
+                        <div class="donation-amount">¥0.07</div>
+                        <div class="donation-note">一分也是爱，感谢支持！</div>
+                    </div>
+                </div>
+                
+                <div class="donation-item">
+                    <div class="donation-rank rank-other">22</div>
+                    <div class="donation-details">
+                        <div class="donation-name anonymous">匿名 "*v"</div>
+                        <div class="donation-amount">¥0.05</div>
+                        <div class="donation-note">一分也是爱，感谢支持！</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="total-donations">
+                当前捐赠总额: <span>¥500.23</span> (截至2025年7月1日)
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 Nini Server. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为卡片添加延迟动画
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+            });
+            
+            // 为前三名添加脉冲动画
+            const top3 = document.querySelectorAll('.rank-1, .rank-2, .rank-3');
+            top3.forEach((item, index) => {
+                item.style.animation = `pulse 2s ${index * 0.5}s infinite`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务器插件 - Nini Minecraft服务器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-light: #e6f7ff;
+            --primary-medium: #b3e0ff;
+            --primary-dark: #003366;
+            --accent: #66b3ff;
+            --core-color: #e74c3c;
+            --economy-color: #2ecc71;
+            --protection-color: #3498db;
+            --utility-color: #9b59b6;
+            --social-color: #f1c40f;
+            --text-dark: #003366;
+            --text-light: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow: 0 4px 12px rgba(0, 51, 102, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-medium));
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            background-blend-mode: multiply;
+            background-color: rgba(182, 224, 255, 0.8);
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--text-light);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* 主内容区域 */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-header h2:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* 插件分类 */
+        .plugin-categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .category-btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            background-color: var(--card-bg);
+            border: 2px solid transparent;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        
+        .category-btn.active, .category-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .core-btn {
+            color: var(--core-color);
+            border-color: var(--core-color);
+        }
+        
+        .core-btn.active, .core-btn:hover {
+            background-color: var(--core-color);
+            color: white;
+        }
+        
+        .economy-btn {
+            color: var(--economy-color);
+            border-color: var(--economy-color);
+        }
+        
+        .economy-btn.active, .economy-btn:hover {
+            background-color: var(--economy-color);
+            color: white;
+        }
+        
+        .protection-btn {
+            color: var(--protection-color);
+            border-color: var(--protection-color);
+        }
+        
+        .protection-btn.active, .protection-btn:hover {
+            background-color: var(--protection-color);
+            color: white;
+        }
+        
+        .utility-btn {
+            color: var(--utility-color);
+            border-color: var(--utility-color);
+        }
+        
+        .utility-btn.active, .utility-btn:hover {
+            background-color: var(--utility-color);
+            color: white;
+        }
+        
+        .social-btn {
+            color: var(--social-color);
+            border-color: var(--social-color);
+        }
+        
+        .social-btn.active, .social-btn:hover {
+            background-color: var(--social-color);
+            color: white;
+        }
+        
+        /* 插件列表 */
+        .plugins-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .plugin-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid;
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .plugin-card.hidden {
+            display: none;
+        }
+        
+        .plugin-card.core {
+            border-top-color: var(--core-color);
+        }
+        
+        .plugin-card.economy {
+            border-top-color: var(--economy-color);
+        }
+        
+        .plugin-card.protection {
+            border-top-color: var(--protection-color);
+        }
+        
+        .plugin-card.utility {
+            border-top-color: var(--utility-color);
+        }
+        
+        .plugin-card.social {
+            border-top-color: var(--social-color);
+        }
+        
+        .plugin-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 51, 102, 0.2);
+        }
+        
+        .plugin-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .plugin-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.8rem;
+            color: white;
+            background: linear-gradient(135deg, var(--accent), var(--primary-dark));
+            flex-shrink: 0;
+        }
+        
+        .plugin-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .plugin-category {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .plugin-card.core .plugin-category {
+            background-color: var(--core-color);
+            color: white;
+        }
+        
+        .plugin-card.economy .plugin-category {
+            background-color: var(--economy-color);
+            color: white;
+        }
+        
+        .plugin-card.protection .plugin-category {
+            background-color: var(--protection-color);
+            color: white;
+        }
+        
+        .plugin-card.utility .plugin-category {
+            background-color: var(--utility-color);
+            color: white;
+        }
+        
+        .plugin-card.social .plugin-category {
+            background-color: var(--social-color);
+            color: #333;
+        }
+        
+        .plugin-description {
+            color: #555;
+            line-height: 1.7;
+            margin: 15px 0;
+        }
+        
+        .plugin-features {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+        }
+        
+        .plugin-features h4 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .features-list {
+            list-style-type: none;
+        }
+        
+        .features-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .features-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            color: var(--economy-color);
+            font-weight: bold;
+        }
+        
+        /* 搜索区域 */
+        .search-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .search-box {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid var(--accent);
+            border-radius: 50px 0 0 50px;
+            font-size: 1.1rem;
+            outline: none;
+        }
+        
+        .search-button {
+            padding: 0 30px;
+            background: linear-gradient(135deg, var(--accent), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 0 50px 50px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-button:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--accent));
+        }
+        
+        /* 插件统计 */
+        .plugins-stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 40px 0;
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .core-stat .stat-value {
+            color: var(--core-color);
+        }
+        
+        .economy-stat .stat-value {
+            color: var(--economy-color);
+        }
+        
+        .protection-stat .stat-value {
+            color: var(--protection-color);
+        }
+        
+        .utility-stat .stat-value {
+            color: var(--utility-color);
+        }
+        
+        .social-stat .stat-value {
+            color: var(--social-color);
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: #555;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .plugins-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .plugin-categories {
+                gap: 10px;
+            }
+            
+            .category-btn {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                border-radius: 50px;
+                margin-bottom: 15px;
+            }
+            
+            .search-button {
+                border-radius: 50px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/nini服务器.png" alt="Nini Server Logo">
+            <h1>Nini Minecraft服务器</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <a href="about.html"><i class="fas fa-info-circle"></i> 关于</a>
+            <a href="juanzen.html"><i class="fas fa-donate"></i> 捐赠</a>
+            <a href="transportation.html"><i class="fas fa-subway"></i> 交通</a>
+            <a href="discussion.html"><i class="fas fa-comments"></i> 讨论</a>
+            <a href="plug.html" class="active"><i class="fas fa-plug"></i> 插件</a>
+            <a href="building.html"><i class="fas fa-landmark"></i> 建筑</a>
+            <a href="control.html"><i class="fas fa-users-cog"></i> 管理</a>
+            <a href="ban.html"><i class="fas fa-lock"></i> 小黑屋</a>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <div class="page-header">
+            <h2>服务器插件系统</h2>
+            <p>探索我们精心挑选的插件，它们增强了游戏体验，提供了更多功能和玩法</p>
+        </div>
+
+        <!-- 插件统计 -->
+        <div class="plugins-stats">
+            <div class="stat-card core-stat">
+                <div class="stat-value">12</div>
+                <div class="stat-label">核心功能插件</div>
+            </div>
+            <div class="stat-card economy-stat">
+                <div class="stat-value">3</div>
+                <div class="stat-label">经济相关插件</div>
+            </div>
+            <div class="stat-card protection-stat">
+                <div class="stat-value">5</div>
+                <div class="stat-label">保护系统插件</div>
+            </div>
+            <div class="stat-card utility-stat">
+                <div class="stat-value">10</div>
+                <div class="stat-label">实用工具插件</div>
+            </div>
+            <div class="stat-card social-stat">
+                <div class="stat-value">7</div>
+                <div class="stat-label">社交互动插件</div>
+            </div>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <h3><i class="fas fa-search"></i> 搜索插件</h3>
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="输入插件名称或功能关键词...">
+                <button class="search-button">搜索插件</button>
+            </div>
+        </div>
+
+        <!-- 插件分类 -->
+        <div class="plugin-categories">
+            <button class="category-btn core-btn active" data-category="all">全部插件</button>
+            <button class="category-btn core-btn" data-category="core">核心功能</button>
+            <button class="category-btn economy-btn" data-category="economy">经济系统</button>
+            <button class="category-btn protection-btn" data-category="protection">保护系统</button>
+            <button class="category-btn utility-btn" data-category="utility">实用工具</button>
+            <button class="category-btn social-btn" data-category="social">社交互动</button>
+        </div>
+
+        <!-- 插件列表 -->
+        <div class="plugins-container">
+            <!-- 核心功能插件 -->
+            <div class="plugin-card core">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">Geyser-Spigot</div>
+                        <div class="plugin-category">核心功能</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    实现Java版和基岩版玩家的跨平台互通，让不同设备的玩家可以在同一服务器游戏。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>支持基岩版客户端连接Java版服务器</li>
+                        <li>实时协议转换</li>
+                        <li>兼容大部分Java版插件</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card core">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">ViaVersion</div>
+                        <div class="plugin-category">核心功能</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    允许不同版本的Minecraft客户端连接到服务器，保持服务器版本的同时兼容旧版本玩家。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>多版本客户端支持</li>
+                        <li>协议转换</li>
+                        <li>无缝更新支持</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card core">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">floodgate</div>
+                        <div class="plugin-category">核心功能</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    与Geyser配合使用，允许基岩版玩家以离线模式加入服务器，无需正版验证。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>基岩版离线登录</li>
+                        <li>跨平台皮肤支持</li>
+                        <li>玩家数据同步</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 经济系统插件 -->
+            <div class="plugin-card economy">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">QuickShop-Hikari</div>
+                        <div class="plugin-category">经济系统</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    简单易用的商店系统，玩家可以创建自己的商店，买卖物品，促进服务器经济发展。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>箱子和告示牌商店</li>
+                        <li>多种货币支持</li>
+                        <li>详细的交易记录</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card economy">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">Vault</div>
+                        <div class="plugin-category">经济系统</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    经济系统API，为其他插件提供统一的货币、权限和聊天接口，是服务器经济的基石。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>统一经济API</li>
+                        <li>多插件兼容</li>
+                        <li>权限管理接口</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 保护系统插件 -->
+            <div class="plugin-card protection">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">Residence</div>
+                        <div class="plugin-category">保护系统</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    领地保护系统，允许玩家创建私人领地，控制谁可以进入和使用领地内的设施。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>创建和管理私人领地</li>
+                        <li>精细的权限控制</li>
+                        <li>领地租赁和出售</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card protection">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-house-damage"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">CoreProtect</div>
+                        <div class="plugin-category">保护系统</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    区域保护插件，防止建筑被破坏，防止恶意PVP，保护玩家建筑安全。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>区域创建与保护</li>
+                        <li>破坏事件记录</li>
+                        <li>智能防爆系统</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 实用工具插件 -->
+            <div class="plugin-card utility">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">WorldEdit</div>
+                        <div class="plugin-category">实用工具</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    强大的世界编辑工具，允许玩家快速建造和修改地形，是建筑爱好者的必备工具。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>区域选择和编辑</li>
+                        <li>地形生成和修改</li>
+                        <li>建筑复制和粘贴</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card utility">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">Essentials</div>
+                        <div class="plugin-category">实用工具</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    提供大量实用命令和功能，包括传送、家园、邮件等，是服务器必备的基础插件。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>玩家传送系统</li>
+                        <li>家园设置</li>
+                        <li>邮件和公告系统</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card utility">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">PlugManX</div>
+                        <div class="plugin-category">实用工具</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    插件管理工具，允许管理员在服务器运行时加载、卸载和重载插件，无需重启服务器。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>动态插件管理</li>
+                        <li>插件状态查看</li>
+                        <li>依赖关系检查</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 社交互动插件 -->
+            <div class="plugin-card social">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">MarriageMasterGUI</div>
+                        <div class="plugin-category">社交互动</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    婚姻系统，允许玩家之间结婚，共同生活，获得夫妻专属技能和奖励。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>玩家结婚系统</li>
+                        <li>伴侣传送功能</li>
+                        <li>夫妻共享家园</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card social">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">PlayerGuild</div>
+                        <div class="plugin-category">社交互动</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    公会系统，玩家可以创建或加入公会，与公会成员一起完成任务，获得公会专属区域。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>创建和管理公会</li>
+                        <li>公会任务系统</li>
+                        <li>公会排行榜</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card social">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">PlayerTitle</div>
+                        <div class="plugin-category">社交互动</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    玩家称号系统，通过成就和任务获得独特称号，展示在玩家名称上方。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>自定义称号系统</li>
+                        <li>成就解锁称号</li>
+                        <li>称号特效支持</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 更多插件 -->
+            <div class="plugin-card utility">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">SkinsRestorer</div>
+                        <div class="plugin-category">实用工具</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    皮肤恢复系统，为离线模式玩家提供皮肤显示功能，让所有玩家都能展示自己的皮肤。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>离线玩家皮肤支持</li>
+                        <li>自定义皮肤设置</li>
+                        <li>皮肤库集成</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card protection">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">Citizens</div>
+                        <div class="plugin-category">保护系统</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    NPC创建系统，可以创建功能丰富的NPC，用于商店、任务、信息提示等用途。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>创建和管理NPC</li>
+                        <li>NPC行为定制</li>
+                        <li>任务和对话系统</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="plugin-card core">
+                <div class="plugin-header">
+                    <div class="plugin-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div>
+                        <div class="plugin-title">LuckPerms</div>
+                        <div class="plugin-category">核心功能</div>
+                    </div>
+                </div>
+                <div class="plugin-description">
+                    高级权限管理系统，提供细粒度的权限控制，支持权限组、继承和时间限制。
+                </div>
+                <div class="plugin-features">
+                    <h4><i class="fas fa-star"></i> 主要功能</h4>
+                    <ul class="features-list">
+                        <li>高级权限管理</li>
+                        <li>权限组系统</li>
+                        <li>实时权限更新</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 Nini Server. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 插件分类功能
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            const pluginCards = document.querySelectorAll('.plugin-card');
+            
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 更新按钮状态
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // 显示/隐藏插件卡片
+                    pluginCards.forEach(card => {
+                        if (category === 'all') {
+                            card.classList.remove('hidden');
+                        } else {
+                            if (card.classList.contains(category)) {
+                                card.classList.remove('hidden');
+                            } else {
+                                card.classList.add('hidden');
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // 搜索功能
+            const searchInput = document.querySelector('.search-input');
+            const searchButton = document.querySelector('.search-button');
+            
+            function searchPlugins() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                
+                if (searchTerm === '') {
+                    pluginCards.forEach(card => card.classList.remove('hidden'));
+                    return;
+                }
+                
+                pluginCards.forEach(card => {
+                    const pluginName = card.querySelector('.plugin-title').textContent.toLowerCase();
+                    const pluginDesc = card.querySelector('.plugin-description').textContent.toLowerCase();
+                    
+                    if (pluginName.includes(searchTerm) || pluginDesc.includes(searchTerm)) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            }
+            
+            searchButton.addEventListener('click', searchPlugins);
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    searchPlugins();
+                }
+            });
+            
+            // 卡片动画效果
+            pluginCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>

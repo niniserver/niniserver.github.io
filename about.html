@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于服务器 - Nini Minecraft服务器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-light: #e6f7ff;
+            --primary-medium: #b3e0ff;
+            --primary-dark: #003366;
+            --accent: #66b3ff;
+            --text-dark: #003366;
+            --text-light: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --shadow: 0 4px 12px rgba(0, 51, 102, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-medium));
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            background-blend-mode: multiply;
+            background-color: rgba(182, 224, 255, 0.8);
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--text-light);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* 主内容区域 */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-header h2:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 51, 102, 0.15);
+        }
+        
+        .card h3 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* 配置信息样式 */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .spec-item {
+            background: linear-gradient(135deg, #f0f9ff, #e1f5fe);
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+        
+        .spec-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.1);
+        }
+        
+        .spec-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .spec-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .spec-details h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+        }
+        
+        .spec-details p {
+            font-size: 1rem;
+            color: #555;
+        }
+        
+        /* 规则样式 */
+        .rules-list {
+            margin: 25px 0 0 30px;
+        }
+        
+        .rules-list li {
+            margin-bottom: 15px;
+            padding-left: 10px;
+            position: relative;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .rules-list li:before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 10px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--accent);
+        }
+        
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .badge-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .badge-success {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        /* 服务器版本 */
+        .version-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            gap: 20px;
+        }
+        
+        .version-card {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            padding: 25px;
+            width: 280px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .version-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .version-card i {
+            font-size: 3rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+        
+        .version-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .version-card p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .version-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/nini服务器.png" alt="Nini Server Logo">
+            <h1>Nini Minecraft服务器</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <a href="about.html" class="active"><i class="fas fa-info-circle"></i> 关于</a>
+            <a href="juanzen.html"><i class="fas fa-donate"></i> 捐赠</a>
+            <a href="transportation.html"><i class="fas fa-subway"></i> 交通</a>
+            <a href="discussion.html"><i class="fas fa-comments"></i> 讨论</a>
+            <a href="plug.html"><i class="fas fa-plug"></i> 插件</a>
+            <a href="building.html"><i class="fas fa-landmark"></i> 建筑</a>
+            <a href="control.html"><i class="fas fa-users-cog"></i> 管理</a>
+            <a href="ban.html"><i class="fas fa-lock"></i> 小黑屋</a>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <div class="page-header">
+            <h2>关于我们的服务器</h2>
+            <p>了解Nini Minecraft服务器的技术规格、版本信息和核心规则，确保您获得最佳游戏体验</p>
+        </div>
+
+        <!-- 服务器配置 -->
+        <div class="card" style="animation-delay: 0.2s">
+            <h3><i class="fas fa-server"></i> 服务器硬件配置</h3>
+            <p>我们的服务器采用高性能硬件，确保稳定流畅的游戏体验：</p>
+            
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <div class="spec-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="spec-details">
+                        <h4>中央处理器 (CPU)</h4>
+                        <p>Intel i5-12400 (6核12线程)</p>
+                    </div>
+                </div>
+                
+                <div class="spec-item">
+                    <div class="spec-icon">
+                        <i class="fas fa-circuit-board"></i>
+                    </div>
+                    <div class="spec-details">
+                        <h4>主板</h4>
+                        <p>微星 H610M-E D4</p>
+                    </div>
+                </div>
+                
+                <div class="spec-item">
+                    <div class="spec-icon">
+                        <i class="fas fa-memory"></i>
+                    </div>
+                    <div class="spec-details">
+                        <h4>内存</h4>
+                        <p>32GB DDR4</p>
+                    </div>
+                </div>
+                
+                <div class="spec-item">
+                    <div class="spec-icon">
+                        <i class="fas fa-hdd"></i>
+                    </div>
+                    <div class="spec-details">
+                        <h4>硬盘存储</h4>
+                        <p>西数 SN580 500GB NVMe SSD</p>
+                    </div>
+                </div>
+                
+                <div class="spec-item">
+                    <div class="spec-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <div class="spec-details">
+                        <h4>散热系统</h4>
+                        <p>长城麒麟400i四铜管散热器</p>
+                    </div>
+                </div>
+                
+                <div class="spec-item">
+                    <div class="spec-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="spec-details">
+                        <h4>电源</h4>
+                        <p>长城神威300W电源</p>
+                    </div>
+                </div>
+                
+                <div class="spec-item">
+                    <div class="spec-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="spec-details">
+                        <h4>机箱</h4>
+                        <p>长城阿基米德MATX机箱</p>
+                    </div>
+                </div>
+                
+                <div class="spec-item">
+                    <div class="spec-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <div class="spec-details">
+                        <h4>显卡</h4>
+                        <p>Intel UHD Graphics 730 (核显)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务器版本信息 -->
+        <div class="card" style="animation-delay: 0.4s">
+            <h3><i class="fas fa-code-branch"></i> 服务器版本</h3>
+            <p>我们支持最新版本的Minecraft，让您享受最新的游戏特性：</p>
+            
+            <div class="version-container">
+                <div class="version-card">
+                    <i class="fab fa-java"></i>
+                    <h4>Java版</h4>
+                    <p>1.21.4</p>
+                    <div class="features">
+                        <p><i class="fas fa-check"></i> 支持最新特性</p>
+                        <p><i class="fas fa-check"></i> 插件兼容性好</p>
+                    </div>
+                </div>
+                
+                <div class="version-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h4>基岩版</h4>
+                    <p>最新版</p>
+                    <div class="features">
+                        <p><i class="fas fa-check"></i> 与Java版互通</p>
+                        <p><i class="fas fa-check"></i> 移动设备友好</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务器规则 -->
+        <div class="card" style="animation-delay: 0.6s">
+            <h3><i class="fas fa-book"></i> 服务器规则</h3>
+            <p>为了维护良好的游戏环境，请遵守以下规则：</p>
+            
+            <ul class="rules-list">
+                <li>
+                    <span class="highlight">死亡不掉落</span> 
+                    <span class="badge badge-success">已启用</span> - 
+                    玩家死亡时不会掉落物品，保护您的珍贵资源
+                </li>
+                <li>
+                    <span class="highlight">Java版离线登录</span> 
+                    <span class="badge badge-success">已启用</span> - 
+                    未购买正版的Java版玩家也可以加入服务器
+                </li>
+                <li>
+                    <span class="highlight">跨平台互通</span> - 
+                    Java版和基岩版玩家可以在同一个世界游戏
+                </li>
+                <li>
+                    <span class="highlight">禁止作弊</span> - 
+                    任何形式的作弊、外挂或利用漏洞都将导致永久封禁
+                </li>
+                <li>
+                    <span class="highlight">尊重他人</span> - 
+                    禁止任何形式的骚扰、歧视或不当言论
+                </li>
+                <li>
+                    <span class="highlight">建筑规范</span> - 
+                    大型建筑项目需申请，禁止破坏他人建筑
+                </li>
+                <li>
+                    <span class="highlight">资源利用</span> - 
+                    合理使用服务器资源，禁止恶意刷物品或实体
+                </li>
+            </ul>
+            
+            <div style="margin-top: 30px; background-color: #e8f5e9; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #2e7d32; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-lightbulb"></i> 温馨提示
+                </h4>
+                <p>服务器定期备份，但建议玩家自行备份重要建筑。管理团队保留对规则的解释权和修改权。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 Nini Server. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为卡片添加延迟动画
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+            });
+            
+            // 为配置项添加悬停效果
+            const specItems = document.querySelectorAll('.spec-item');
+            specItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.spec-icon');
+                    icon.style.transform = 'rotate(10deg)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.spec-icon');
+                    icon.style.transform = 'rotate(0deg)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

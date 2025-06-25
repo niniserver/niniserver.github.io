@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交通路线图 - Nini Minecraft服务器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-light: #e6f7ff;
+            --primary-medium: #b3e0ff;
+            --primary-dark: #003366;
+            --accent: #66b3ff;
+            --subway-green: #2ecc71; /* 1号线改为绿色 */
+            --subway-red: #e74c3c;   /* 2号线保持红色 */
+            --subway-blue: #3498db;  /* 4号线改为蓝色 */
+            --text-dark: #003366;
+            --text-light: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow: 0 4px 12px rgba(0, 51, 102, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-medium));
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=2048&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            background-blend-mode: multiply;
+            background-color: rgba(182, 224, 255, 0.8);
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--text-light);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* 主内容区域 */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .page-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-header h2:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* 交通图区域 */
+        .transportation-map {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .map-container {
+            background-color: #2c3e50;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 5px solid #34495e;
+        }
+        
+        .map-container:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .map-header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .map-header h3 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .map-header p {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .map-image {
+            position: relative;
+            z-index: 1;
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            border: 3px solid #7f8c8d;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .map-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+        }
+        
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+        
+        .map-container:hover .map-overlay {
+            opacity: 1;
+        }
+        
+        .map-overlay span {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 30px;
+            background: rgba(44, 62, 80, 0.8);
+            border-radius: 30px;
+            border: 2px solid var(--accent);
+        }
+        
+        /* 线路信息 */
+        .lines-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .line-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .line-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .line-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .line-badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .line-1 .line-badge {
+            background-color: var(--subway-green); /* 1号线绿色 */
+        }
+        
+        .line-2 .line-badge {
+            background-color: var(--subway-red); /* 2号线红色 */
+        }
+        
+        .line-4 .line-badge {
+            background-color: var(--subway-blue); /* 4号线蓝色 */
+        }
+        
+        .line-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .line-stations {
+            margin-top: 15px;
+        }
+        
+        .line-stations h4 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .station-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .station-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border: 1px solid #d1e8ff;
+            position: relative;
+        }
+        
+        .station-item:before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #bbb;
+            margin-right: 15px;
+        }
+        
+        .station-item:hover {
+            background-color: var(--accent);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .transfer-station:before {
+            background: var(--subway-blue);
+        }
+        
+        .transfer-station:after {
+            content: '换乘站';
+            position: absolute;
+            right: 15px;
+            background: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .terminal-station:before {
+            background: #e74c3c;
+        }
+        
+        .terminal-station:after {
+            content: '终点站';
+            position: absolute;
+            right: 15px;
+            background: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .line-description {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .line-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 10px 0;
+            border-top: 1px dashed #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .line-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* 使用指南 */
+        .usage-guide {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .usage-guide h3 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .guide-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .guide-step {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--primary-dark);
+        }
+        
+        .step-content p {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background: linear-gradient(to right, var(--primary-dark), var(--accent));
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .lines-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .guide-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .map-header h3 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/nini服务器.png" alt="Nini Server Logo">
+            <h1>Nini Minecraft服务器</h1>
+        </div>
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <a href="about.html"><i class="fas fa-info-circle"></i> 关于</a>
+            <a href="juanzen.html"><i class="fas fa-donate"></i> 捐赠</a>
+            <a href="transportation.html" class="active"><i class="fas fa-subway"></i> 交通</a>
+            <a href="discussion.html"><i class="fas fa-comments"></i> 讨论</a>
+            <a href="plug.html"><i class="fas fa-plug"></i> 插件</a>
+            <a href="building.html"><i class="fas fa-landmark"></i> 建筑</a>
+            <a href="control.html"><i class="fas fa-users-cog"></i> 管理</a>
+            <a href="ban.html"><i class="fas fa-lock"></i> 小黑屋</a>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <div class="page-header">
+            <h2>服务器交通路线图</h2>
+            <p>探索我们精心设计的地铁系统，快速到达服务器各个主要地点和玩家社区</p>
+        </div>
+
+        <!-- 交通路线图 -->
+        <div class="transportation-map">
+            <div class="map-container">
+                <div class="map-header">
+                    <h3><i class="fas fa-map-marked-alt"></i> Nini服务器地铁网络图</h3>
+                    <p>最新版本：2025年7月 | 点击图片查看大图</p>
+                </div>
+                <div style="position: relative;">
+                    <img src="/交通路线.png" alt="服务器交通路线图" class="map-image">
+                    <div class="map-overlay">
+                        <span><i class="fas fa-search-plus"></i> 点击查看大图</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 地铁线路信息 -->
+        <div class="lines-info">
+            <!-- 1号线 - 绿色 -->
+            <div class="line-card line-1">
+                <div class="line-header">
+                    <div class="line-badge">1</div>
+                    <div class="line-title">机场专线</div>
+                </div>
+                <div class="line-stations">
+                    <h4><i class="fas fa-train"></i> 站点列表</h4>
+                    <div class="station-list">
+                        <div class="station-item terminal-station">杂鱼园博物馆</div>
+                        <div class="station-item">文化中心</div>
+                        <div class="station-item">玩家社区</div>
+                        <div class="station-item transfer-station">咕咕广场</div>
+                        <div class="station-item">科技园区</div>
+                        <div class="station-item terminal-station">nini咕咕国际机场</div>
+                    </div>
+                </div>
+                <div class="line-description">
+                    <p><i class="fas fa-info-circle"></i> 机场专线连接文化区与交通枢纽，途经咕咕广场换乘中心，平均每8分钟一班。</p>
+                </div>
+                <div class="line-info">
+                    <div class="line-info-item">
+                        <i class="fas fa-clock"></i> 运营时间：6:00 - 24:00
+                    </div>
+                    <div class="line-info-item">
+                        <i class="fas fa-tachometer-alt"></i> 全程时间：15分钟
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2号线 - 红色 -->
+            <div class="line-card line-2">
+                <div class="line-header">
+                    <div class="line-badge">2</div>
+                    <div class="line-title">城市干线</div>
+                </div>
+                <div class="line-stations">
+                    <h4><i class="fas fa-train"></i> 站点列表</h4>
+                    <div class="station-list">
+                        <div class="station-item terminal-station">鞘翅飞行公园</div>
+                        <div class="station-item">冒险者营地</div>
+                        <div class="station-item">nini公会</div>
+                        <div class="station-item transfer-station">咕咕广场</div>
+                        <div class="station-item">商业中心</div>
+                        <div class="station-item terminal-station">啵啵乐</div>
+                    </div>
+                </div>
+                <div class="line-description">
+                    <p><i class="fas fa-info-circle"></i> 贯穿城市东西的主干线，连接娱乐区和商业区，高峰期每5分钟一班。</p>
+                </div>
+                <div class="line-info">
+                    <div class="line-info-item">
+                        <i class="fas fa-clock"></i> 运营时间：5:30 - 24:30
+                    </div>
+                    <div class="line-info-item">
+                        <i class="fas fa-tachometer-alt"></i> 全程时间：18分钟
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 4号线 - 蓝色 -->
+            <div class="line-card line-4">
+                <div class="line-header">
+                    <div class="line-badge">4</div>
+                    <div class="line-title">洞穴探险线</div>
+                </div>
+                <div class="line-stations">
+                    <h4><i class="fas fa-train"></i> 站点列表</h4>
+                    <div class="station-list">
+                        <div class="station-item terminal-station">nini艺术馆</div>
+                        <div class="station-item">创意工坊</div>
+                        <div class="station-item">前哨站</div>
+                        <div class="station-item">休闲大厅地狱</div>
+                        <div class="station-item transfer-station">啵啵乐</div>
+                        <div class="station-item">地下矿场</div>
+                        <div class="station-item terminal-station">繁茂洞穴</div>
+                    </div>
+                </div>
+                <div class="line-description">
+                    <p><i class="fas fa-info-circle"></i> 连接地表与地下的探险专线，提供便捷的地下交通服务，每10分钟一班。</p>
+                </div>
+                <div class="line-info">
+                    <div class="line-info-item">
+                        <i class="fas fa-clock"></i> 运营时间：7:00 - 23:00
+                    </div>
+                    <div class="line-info-item">
+                        <i class="fas fa-tachometer-alt"></i> 全程时间：22分钟
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 使用指南 -->
+        <div class="usage-guide">
+            <h3><i class="fas fa-book-open"></i> 地铁系统使用指南</h3>
+            <div class="guide-steps">
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>找到最近车站</h4>
+                        <p>在服务器各处寻找带有"M"标志的地铁入口，通常位于主要建筑和社区附近。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>选择目的地</h4>
+                        <p>在车站内查看线路图，根据目的地选择正确的线路和方向。各线路使用不同颜色标识。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>乘坐列车</h4>
+                        <p>进入站台等待列车，注意听广播提示。列车到达后直接进入车厢，无需购票。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>换乘指南</h4>
+                        <p>在标有"换乘站"的车站下车，按照指示标志前往其他线路的站台继续旅程。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4>到达目的地</h4>
+                        <p>注意收听车内广播或查看地图，在目的地车站下车后按照出口指示离开。</p>
+                    </div>
+                </div>
+                
+                <div class="guide-step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h4>注意事项</h4>
+                        <p>请勿在车厢内使用武器或魔法，禁止破坏车站设施，高峰期请注意安全。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 Nini Server. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 页面加载效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为图片添加点击放大功能
+            const mapImage = document.querySelector('.map-image');
+            mapImage.addEventListener('click', function() {
+                const overlay = document.createElement('div');
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+                overlay.style.zIndex = '1000';
+                overlay.style.display = 'flex';
+                overlay.style.justifyContent = 'center';
+                overlay.style.alignItems = 'center';
+                overlay.style.cursor = 'zoom-out';
+                
+                const img = document.createElement('img');
+                img.src = mapImage.src;
+                img.style.maxWidth = '90%';
+                img.style.maxHeight = '90%';
+                img.style.borderRadius = '10px';
+                img.style.boxShadow = '0 0 30px rgba(255, 255, 255, 0.2)';
+                
+                overlay.appendChild(img);
+                document.body.appendChild(overlay);
+                
+                overlay.addEventListener('click', function() {
+                    document.body.removeChild(overlay);
+                });
+            });
+            
+            // 为线路卡片添加动画
+            const lineCards = document.querySelectorAll('.line-card');
+            lineCards.forEach((card, index) => {
+                card.style.animation = `slideUp 0.6s ease-out ${index * 0.1}s forwards`;
+                card.style.opacity = '0';
+            });
+            
+            // 为站点添加点击效果
+            const stations = document.querySelectorAll('.station-item');
+            stations.forEach(station => {
+                station.addEventListener('click', function() {
+                    stations.forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // 显示站点信息
+                    const stationName = this.textContent;
+                    alert(`您选择了站点：${stationName}\n这是${stationName}站的详细信息...`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
